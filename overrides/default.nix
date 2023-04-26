@@ -2201,6 +2201,16 @@ lib.composeManyExtensions [
         }
       );
 
+      python-pam = super.python-pam.overridePythonAttrs (
+        old: {
+          postPatch = ''
+            substituteInPlace src/pam/__internals.py \
+            --replace 'find_library("pam")' '"${pkgs.pam}/lib/libpam.so"' \
+            --replace 'find_library("pam_misc")' '"${pkgs.pam}/lib/libpam_misc.so"'
+          '';
+        }
+      );
+
       python-snappy = super.python-snappy.overridePythonAttrs (
         old: {
           buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.snappy ];
